@@ -1,0 +1,25 @@
+{
+  "name": "naija-transfer-status",
+  "version": "1.0.0",
+  "description": "Independent Real-Time Integrity Infrastructure Monitoring for Nigerian Banking Nodes",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js"
+  },
+  "keywords": [
+    "nigeria",
+    "banking",
+    "nibss",
+    "telemetry",
+    "paystack"
+  ],
+  "author": "NaijaTransferStatus Team",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
