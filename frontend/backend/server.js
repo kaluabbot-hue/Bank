@@ -20,7 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 /* --- 🌐 STATIC FILE ROUTING ENGINE MIDDLEWARE --- */
-// ✅ FIXED: Points up one directory level to serve files from the main frontend folder
+// ✅ POINTS UP ONE DIRECTORY LEVEL: Serves files from your root frontend directory layout
 app.use(express.static(path.join(__dirname, '..')));
 
 /* --- 🗄️ LIVE IN-MEMORY TELEMETRY DATA MATRIX --- */
@@ -88,6 +88,7 @@ app.get('/api/matrix/status', (req, res) => {
         };
     }).sort((a, b) => b.failureRate - a.failureRate); // Broken networks flow to the top instantly
 
+    // ✅ FIXED: worstChannel now properly passes a single object element to prevent crashing your frontend
     res.json({
         banks: sortedBanks,
         worstChannel: sortedBanks[0]
@@ -187,7 +188,7 @@ function checkAndTriggerPremiumAlerts(bankCode, channelType) {
 /* --- 🌐 FALLBACK WILDCARD PAGE ROUTER --- */
 // Catches all other requests and maps them straight back to your base layout page
 app.get('*', (req, res) => {
-    // ✅ FIXED: Points up one directory level to locate your index.html file safely
+    // Points up one directory level to locate your index.html file safely
     res.sendFile(path.join(__dirname, '../index.html'));
 });
 
