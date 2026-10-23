@@ -20,8 +20,8 @@ app.use(cors());
 app.use(express.json());
 
 /* --- 🌐 STATIC FILE ROUTING ENGINE MIDDLEWARE --- */
-// Instructs Express to serve your frontend assets straight to web visitors
-app.use(express.static(path.join(__dirname, '../frontend')));
+// ✅ FIXED: Points up one directory level to serve files from the main frontend folder
+app.use(express.static(path.join(__dirname, '..')));
 
 /* --- 🗄️ LIVE IN-MEMORY TELEMETRY DATA MATRIX --- */
 const bankNodes = {
@@ -187,7 +187,8 @@ function checkAndTriggerPremiumAlerts(bankCode, channelType) {
 /* --- 🌐 FALLBACK WILDCARD PAGE ROUTER --- */
 // Catches all other requests and maps them straight back to your base layout page
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    // ✅ FIXED: Points up one directory level to locate your index.html file safely
+    res.sendFile(path.join(__dirname, '../index.html'));
 });
 
 /* --- 🚀 BOOT PRODUCTION INTERNET ENGINE --- */
