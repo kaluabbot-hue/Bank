@@ -1,0 +1,15 @@
+# 📦 Node Dependencies (Render downloads these automatically using package.json)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 🛡️ API Credentials & Secret Security Keys (Keeps your Paystack Keys hidden)
+.env
+.env.local
+.env.production
+.env.development
+
+# 💻 Local Operating System Junk Files
+.DS_Store
+Thumbs.db
