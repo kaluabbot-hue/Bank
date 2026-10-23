@@ -9,7 +9,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 📡 DYNAMIC BASE URL ROUTING CONFIGURATION
     // Automatically detects if running locally or deployed on a live Render server cloud address
-    const API_BASE_URL = window.location.origin.includes('localhost') 
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000' 
         : window.location.origin;
     
@@ -103,6 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Combine code and account digits string structure 
         const validationString = standardizedBankCode + accountNum.slice(0, 9);
+        
+        // Official CBN NUBAN algorithm weighting constants
         const multipliers =;
         
         let algorithmicSum = 0;
@@ -112,7 +114,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const moduloRemainder = algorithmicSum % 10;
         const calculatedCheckDigit = moduloRemainder === 0 ? 0 : 10 - moduloRemainder;
-        const customerProvidedCheckDigit = parseInt(accountNum);
+        
+        // Grab the final character (10th digit) of the user input string to compare values
+        const customerProvidedCheckDigit = parseInt(accountNum.slice(-1));
 
         return calculatedCheckDigit === customerProvidedCheckDigit;
     }
@@ -128,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateLiveMarqueeTicker(data.worstChannel);
         } catch (error) {
             console.error("Telemetry link lost:", error);
-            if (bankGrid && bankGrid.querySelector('.loading-placeholder')) {
+            if (bankGrid) {
                 bankGrid.innerHTML = `<div class="bank-card-pulse error-alert">Telemetry communication blackout. Reconnecting automatically...</div>`;
             }
         }
@@ -166,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="bank-metrics">
                     <span class="metric-label">Failure Rate</span>
-                    <span class="metric-value" style="color: var(--accent-${statusPillClass.split('-')})">${bank.failureRate}%</span>
+                    <span class="metric-value" style="color: var(--accent-${statusPillClass.split('-')[1] || statusPillClass})">${bank.failureRate}%</span>
                 </div>
             `;
             bankGrid.appendChild(cardElement);
