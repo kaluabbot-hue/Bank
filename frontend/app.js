@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 /**
  * ==========================================================================
  * NAIJATRANSFERSTATUS.COM — PRODUCTION FRONTEND APPLICATION CORE ENGINE
@@ -19,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Automatically detects if running locally or deployed on a live Render server cloud address
     const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000' 
-        : 'https://naijatransferstatus.onrender.com'; // 👈 REPLACE THIS STRING WITH YOUR ACTUAL LIVE BACKEND RENDER URL
+        : ''; // ✅ PERFECT UNIFIED ROUTING: Empty string lets the browser route to the same domain automatically!
     
     // UI CORE APPLICATION SELECTOR ANCHORS
     const reportForm = document.getElementById('report-form');
@@ -205,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* --- 🕒 HARDWARE CLOCK SYNCHRONIZATION RUNTIMES --- */
-    font-weight: normal;
     function updateTelemetryClock() {
         if (!matrixTimestamp) return;
         const serverLocalTime = new Date();
