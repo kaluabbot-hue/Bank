@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 /**
  * ==========================================================================
  * NAIJATRANSFERSTATUS.COM — PRODUCTION FRONTEND APPLICATION CORE ENGINE
@@ -11,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Automatically detects if running locally or deployed on a live Render server cloud address
     const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:5000' 
-        : window.location.origin;
+        : 'https://naijatransferstatus.onrender.com'; // 👈 REPLACE THIS STRING WITH YOUR ACTUAL LIVE BACKEND RENDER URL
     
     // UI CORE APPLICATION SELECTOR ANCHORS
     const reportForm = document.getElementById('report-form');
@@ -101,14 +109,14 @@ document.addEventListener('DOMContentLoaded', () => {
             standardizedBankCode = bankCode.padStart(3, '0');
         }
 
-        // Combine code and account digits string structure 
+        // Combine code and account digits string structure (Exactly 11 characters)
         const validationString = standardizedBankCode + accountNum.slice(0, 9);
         
-        // Official CBN NUBAN algorithm weighting constants
-        const multipliers =;
+        // FIXED CHECKSUM ALIGNMENT: Reduced to exactly 11 valid CBN multipliers to match length
+        const multipliers = Array.of(3, 7, 3, 3, 7, 3, 3, 7, 3, 3, 7);
         
         let algorithmicSum = 0;
-        for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 11; i++) {
             algorithmicSum += parseInt(validationString[i]) * multipliers[i];
         }
 
@@ -133,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Telemetry link lost:", error);
             if (bankGrid) {
-                bankGrid.innerHTML = `<div class="bank-card-pulse error-alert">Telemetry communication blackout. Reconnecting automatically...</div>`;
+                bankGrid.innerHTML = `<div class="matrix-glitch-loader"><p class="hud-feedback-log error-alert">Telemetry communication blackout. Reconnecting automatically...</p></div>`;
             }
         }
     }
@@ -143,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bankGrid.innerHTML = ''; // Wipes placeholder loading layouts cleanly
 
         if (!banks || banks.length === 0) {
-            bankGrid.innerHTML = '<div class="bank-card-pulse">All channel nodes reporting 100% operational throughput efficiency.</div>';
+            bankGrid.innerHTML = '<div class="bank-card-pulse"><span class="bank-name">All channel nodes reporting 100% operational throughput efficiency.</span></div>';
             return;
         }
 
@@ -153,24 +161,27 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let statusPillClass = 'status-fluid';
             let statusDisplayLabel = 'Fluid';
+            let valueGlowColor = 'var(--cyber-neon-green)';
 
-            // Traffic light separation ranges
+            // Aligned perfectly to map your new high-stakes cyber neon corridors
             if (bank.failureRate >= 70) {
                 statusPillClass = 'status-down';
-                statusDisplayLabel = 'Down';
+                statusDisplayLabel = 'Critical';
+                valueGlowColor = 'var(--cyber-neon-crimson)';
             } else if (bank.failureRate >= 30) {
                 statusPillClass = 'status-unstable';
                 statusDisplayLabel = 'Unstable';
+                valueGlowColor = 'var(--cyber-neon-amber)';
             }
 
             cardElement.innerHTML = `
                 <div class="bank-meta">
-                    <span class="bank-name">${bank.name}</span>
+                    <span class="bank-name">${bank.name.toUpperCase()}</span>
                     <span class="status-indicator ${statusPillClass}">${statusDisplayLabel}</span>
                 </div>
                 <div class="bank-metrics">
-                    <span class="metric-label">Failure Rate</span>
-                    <span class="metric-value" style="color: var(--accent-${statusPillClass.split('-')[1] || statusPillClass})">${bank.failureRate}%</span>
+                    <span class="metric-label">DEVIATION INDEX</span>
+                    <span class="metric-value" style="color: ${valueGlowColor}">${bank.failureRate}%</span>
                 </div>
             `;
             bankGrid.appendChild(cardElement);
@@ -180,35 +191,43 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateLiveMarqueeTicker(worstChannel) {
         if (!worstBankTicker) return;
         
-        if (worstChannel && worstChannel.failureRate >= 30) {
-            worstBankTicker.textContent = `🚨 MONITOR ALERT: ${worstChannel.name.toUpperCase()} GRID INFRASTRUCTURE CRITICAL DEVIATION AT ${worstChannel.failureRate}% ERROR INTAKE. TRANSACTIONS EXPERIENCING DELAYS.`;
+        // Handle incoming data if passed as collection array or raw item object
+        const focusNode = Array.isArray(worstChannel) ? worstChannel[0] : worstChannel;
+        
+        // FIXED SAFE-CHECK: Checks if focusNode exists before trying to read properties
+        if (focusNode && typeof focusNode.failureRate !== 'undefined' && focusNode.failureRate >= 30) {
+            worstBankTicker.textContent = `🚨 MONITOR ALERT: ${focusNode.name.toUpperCase()} GRID INFRASTRUCTURE CRITICAL DEVIATION AT ${focusNode.failureRate}% ERROR INTAKE. TRANSACTIONS EXPERIENCING DELAYS. HOLD ROUTING SECTIONS.`;
+            worstBankTicker.style.color = 'var(--cyber-neon-crimson)';
         } else {
-            worstBankTicker.textContent = `✅ CENTRAL CORE SWITCH STABLE — ALL NIBSS CHANNELS AND ECOBANK, OPAY, ACCESS, AND ZENITH NETWORKS ROUTING SECURELY.`;
+            worstBankTicker.textContent = ` Central Core Switch Stable  All channels and fintech gateway networks routing securely across local commercial nodes.`;
+            worstBankTicker.style.color = 'var(--cyber-neon-cyan)';
         }
     }
 
     /* --- 🕒 HARDWARE CLOCK SYNCHRONIZATION RUNTIMES --- */
+    font-weight: normal;
     function updateTelemetryClock() {
         if (!matrixTimestamp) return;
         const serverLocalTime = new Date();
-        matrixTimestamp.textContent = `MATRIX FEED STATUS: ACTIVE — TELEMETRY TIME: ${serverLocalTime.toLocaleDateString()} | ${serverLocalTime.toLocaleTimeString()}`;
+        matrixTimestamp.textContent = `FEED_STATUS: MULTI_THREAD_ACTIVE // TELEMETRY TIME: ${serverLocalTime.toLocaleDateString()} | ${serverLocalTime.toLocaleTimeString()}`;
     }
 
+    /* --- 📢 HUD UTIL: LOG INTERFACE FEEDBACK ALERTS --- */
     function showFeedbackMessage(text, CSSStyleClass) {
         if (!formFeedback) return;
         formFeedback.textContent = text;
-        formFeedback.className = `form-feedback-anchor ${CSSStyleClass}`;
+        formFeedback.className = `hud-feedback-log ${CSSStyleClass === 'success-alert' ? 'success-alert' : 'error-alert'}`;
     }
 
     function clearFeedbackDisplay() {
         if (!formFeedback) return;
         formFeedback.textContent = '';
-        formFeedback.className = 'form-feedback-anchor';
+        formFeedback.className = 'hud-feedback-log';
     }
 
     function toggleFormLoadingState(isLoading) {
         if (!submitBtn) return;
         submitBtn.disabled = isLoading;
-        submitBtn.textContent = isLoading ? "VERIFYING INTERCEPT INTEGRITY..." : "Verify Integrity & Submit Incident";
+        submitBtn.textContent = isLoading ? "VERIFYING INTERCEPT INTEGRITY..." : "TRANSMIT INCIDENT PROTOCOL";
     }
 });
